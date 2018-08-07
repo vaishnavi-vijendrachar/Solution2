@@ -7,6 +7,7 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 
 import com.example.vish.solution2.model.Data;
 import com.example.vish.solution2.model.FromCentral;
@@ -20,6 +21,7 @@ import com.example.vish.solution2.repository.DatabaseTask;
 import com.example.vish.solution2.repository.TravelDao;
 import com.example.vish.solution2.repository.WebserviceRepository;
 import com.example.vish.solution2.util.NetworkUtil;
+import com.example.vish.solution2.view.MainActivity;
 
 
 import java.util.List;
@@ -31,7 +33,7 @@ import java.util.List;
 public class MainViewModel extends AndroidViewModel {
 
     private MutableLiveData<List<Response>> resultList;
-    private MutableLiveData<List<FromCentral>> fromCentralList;
+
     Context context;
     TravelDao travelDao;
 
@@ -45,18 +47,23 @@ public class MainViewModel extends AndroidViewModel {
         if (resultList == null) {
             resultList = new MutableLiveData<>();
         }
-
-        resultList = new WebserviceRepository().getDataList();
-
+        if(NetworkUtil.isNetworkAvailable(context)) {
+            resultList = new WebserviceRepository().getDataList();
+        }
         return resultList;
     }
 
+    public List<Data> loadDataFromDb(){
+        List<Data> data = travelDao.getAllData();
+        return data;
+    }
+
     public void insertInToDb(Data data){
-        new DatabaseTask(context).execute(data);
+        DatabaseTask task = new DatabaseTask(context);
+        task.execute(data);
     }
 
     public FromCentral getFomCentralfromDb(String name){
-
         Data data = travelDao.getDataByName(name);
         FromCentral fc = new FromCentral();
         fc.train = data.train;

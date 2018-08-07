@@ -7,8 +7,6 @@ import android.arch.persistence.room.TypeConverters;
 import android.content.Context;
 
 import com.example.vish.solution2.model.Data;
-import com.example.vish.solution2.model.Response;
-import com.example.vish.solution2.util.ResponseTypeConverters;
 
 @android.arch.persistence.room.Database(
         entities = {Data.class},
@@ -16,7 +14,7 @@ import com.example.vish.solution2.util.ResponseTypeConverters;
         exportSchema = false
 )
 
-@TypeConverters({ResponseTypeConverters.class})
+
 public abstract class Database extends RoomDatabase {
     private static Database INSTANCE;
 
